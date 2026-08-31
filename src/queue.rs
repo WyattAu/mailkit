@@ -19,12 +19,14 @@ pub struct EmailQueue {
 }
 
 impl EmailQueue {
+    /// Create a new empty email queue.
     pub fn new() -> Self {
         Self {
             inner: Arc::new(Mutex::new(VecDeque::new())),
         }
     }
 
+    /// Add an email message to the queue.
     pub async fn enqueue(&self, message: EmailMessage) {
         let mut guard = self.inner.lock().await;
         guard.push_back(QueuedEmail {
@@ -34,6 +36,7 @@ impl EmailQueue {
         });
     }
 
+    /// Process all queued emails using the given provider.
     pub async fn process<P: EmailProvider>(
         &self,
         provider: &P,
@@ -65,10 +68,12 @@ impl EmailQueue {
         Ok(())
     }
 
+    /// Get the number of queued emails.
     pub async fn len(&self) -> usize {
         self.inner.lock().await.len()
     }
 
+    /// Check if the queue is empty.
     pub async fn is_empty(&self) -> bool {
         self.inner.lock().await.is_empty()
     }
