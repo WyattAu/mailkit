@@ -108,17 +108,19 @@ impl EmailMessageBuilder {
     /// Build the email message.
     pub fn build(self) -> Result<EmailMessage, crate::error::EmailError> {
         Ok(EmailMessage {
-            from: self.from.ok_or_else(|| crate::error::EmailError::provider("from is required"))?,
+            from: self
+                .from
+                .ok_or_else(|| crate::error::EmailError::provider("from is required"))?,
             to: if self.to.is_empty() {
-                return Err(crate::error::EmailError::provider("at least one recipient is required"));
+                return Err(crate::error::EmailError::provider(
+                    "at least one recipient is required",
+                ));
             } else {
                 self.to
             },
             cc: self.cc,
             bcc: self.bcc,
-            subject: self
-                .subject
-                .unwrap_or_default(),
+            subject: self.subject.unwrap_or_default(),
             html_body: self.html_body,
             text_body: self.text_body,
             attachments: self.attachments,

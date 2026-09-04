@@ -4,7 +4,10 @@ use crate::message::EmailMessage;
 /// Trait for email transport providers.
 pub trait EmailProvider: Send + Sync {
     /// Send an email message.
-    fn send(&self, message: &EmailMessage) -> impl std::future::Future<Output = Result<(), EmailError>> + Send;
+    fn send(
+        &self,
+        message: &EmailMessage,
+    ) -> impl std::future::Future<Output = Result<(), EmailError>> + Send;
 }
 
 /// Resend HTTP API provider.
@@ -24,7 +27,10 @@ impl ResendProvider {
 }
 
 impl EmailProvider for ResendProvider {
-    fn send(&self, message: &EmailMessage) -> impl std::future::Future<Output = Result<(), EmailError>> + Send {
+    fn send(
+        &self,
+        message: &EmailMessage,
+    ) -> impl std::future::Future<Output = Result<(), EmailError>> + Send {
         let api_key = self.api_key.clone();
         let client = self.client.clone();
         let message = message.clone();
@@ -56,10 +62,7 @@ impl EmailProvider for ResendProvider {
 
             if !resp.status().is_success() {
                 let status = resp.status();
-                let text = resp
-                    .text()
-                    .await
-                    .unwrap_or_else(|_| "<no body>".into());
+                let text = resp.text().await.unwrap_or_else(|_| "<no body>".into());
                 return Err(EmailError::provider(format!(
                     "resend returned {status}: {text}"
                 )));
@@ -89,8 +92,8 @@ impl SmtpProvider {
     ) -> Result<Self, EmailError> {
         use lettre::transport::smtp::authentication::Credentials;
 
-        let mut builder = lettre::transport::smtp::SmtpTransport::builder_dangerous(host.into())
-            .port(port);
+        let mut builder =
+            lettre::transport::smtp::SmtpTransport::builder_dangerous(host.into()).port(port);
 
         if let (Some(user), Some(pass)) = (username, password) {
             builder = builder.credentials(Credentials::new(user, pass));
@@ -108,7 +111,7 @@ fn build_lettre_message(
     message: &EmailMessage,
 ) -> Result<lettre::Message, EmailError> {
     use lettre::message::header::ContentType;
-    use lettre::{message::Mailbox, Message};
+    use lettre::{Message, message::Mailbox};
 
     let to: Mailbox = message
         .to
@@ -134,17 +137,11 @@ fn build_lettre_message(
     }
 
     let email = if let Some(html) = &message.html_body {
-        builder
-            .header(ContentType::TEXT_HTML)
-            .body(html.clone())
+        builder.header(ContentType::TEXT_HTML).body(html.clone())
     } else if let Some(text) = &message.text_body {
-        builder
-            .header(ContentType::TEXT_PLAIN)
-            .body(text.clone())
+        builder.header(ContentType::TEXT_PLAIN).body(text.clone())
     } else {
-        builder
-            .header(ContentType::TEXT_PLAIN)
-            .body(String::new())
+        builder.header(ContentType::TEXT_PLAIN).body(String::new())
     };
 
     email.map_err(|e| EmailError::provider(e.to_string()))
@@ -152,7 +149,10 @@ fn build_lettre_message(
 
 #[cfg(feature = "smtp")]
 impl EmailProvider for SmtpProvider {
-    fn send(&self, message: &EmailMessage) -> impl std::future::Future<Output = Result<(), EmailError>> + Send {
+    fn send(
+        &self,
+        message: &EmailMessage,
+    ) -> impl std::future::Future<Output = Result<(), EmailError>> + Send {
         let from = self.from.clone();
         let transport = self.transport.clone();
         let message = message.clone();
@@ -207,7 +207,10 @@ impl AsyncSmtpProvider {
 
 #[cfg(feature = "smtp")]
 impl EmailProvider for AsyncSmtpProvider {
-    fn send(&self, message: &EmailMessage) -> impl std::future::Future<Output = Result<(), EmailError>> + Send {
+    fn send(
+        &self,
+        message: &EmailMessage,
+    ) -> impl std::future::Future<Output = Result<(), EmailError>> + Send {
         let from = self.from.clone();
         let transport = self.transport.clone();
         let message = message.clone();

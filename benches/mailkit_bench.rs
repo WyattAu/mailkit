@@ -1,8 +1,8 @@
-use criterion::{criterion_group, criterion_main, Criterion};
+use chrono::Utc;
+use criterion::{Criterion, criterion_group, criterion_main};
 use mailkit::EmailMessage;
 use mailkit::audit::{AuditLogger, EmailLogEntry, InMemoryAuditLog, LogStatus};
 use mailkit::message::Attachment;
-use chrono::Utc;
 use std::path::PathBuf;
 
 fn bench_email_builder_basic(c: &mut Criterion) {

@@ -386,11 +386,10 @@ fn error_debug_format() {
 fn error_variants_are_distinct() {
     let e1 = EmailError::provider("a");
     let e2 = EmailError::template("b");
-    let e3 = EmailError::Serialization(serde_json::from_str::<serde_json::Value>("not json!!").unwrap_err());
-    let e4 = EmailError::Io(std::io::Error::new(
-        std::io::ErrorKind::Other,
-        "x",
-    ));
+    let e3 = EmailError::Serialization(
+        serde_json::from_str::<serde_json::Value>("not json!!").unwrap_err(),
+    );
+    let e4 = EmailError::Io(std::io::Error::new(std::io::ErrorKind::Other, "x"));
 
     assert!(e1.to_string() != e2.to_string());
     assert!(e2.to_string() != e3.to_string());

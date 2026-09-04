@@ -37,10 +37,7 @@ impl EmailQueue {
     }
 
     /// Process all queued emails using the given provider.
-    pub async fn process<P: EmailProvider>(
-        &self,
-        provider: &P,
-    ) -> Result<(), EmailError> {
+    pub async fn process<P: EmailProvider>(&self, provider: &P) -> Result<(), EmailError> {
         let mut guard = self.inner.lock().await;
         let mut failed = Vec::new();
 
