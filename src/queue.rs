@@ -18,6 +18,12 @@ pub struct EmailQueue {
     inner: Arc<Mutex<VecDeque<QueuedEmail>>>,
 }
 
+impl Default for EmailQueue {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl EmailQueue {
     /// Create a new empty email queue.
     pub fn new() -> Self {

@@ -13,11 +13,14 @@ pub mod message;
 pub mod provider;
 /// Email queue for deferred sending.
 pub mod queue;
+/// JWZ-lite email threading (reply-chain + subject-window grouping).
+pub mod threading;
 
 pub use error::EmailError;
 pub use message::EmailMessage;
 pub use provider::{EmailProvider, ResendProvider};
 pub use queue::EmailQueue;
+pub use threading::{ThreadAssignment, ThreadInput, thread_messages};
 
 #[cfg(feature = "smtp")]
 pub use provider::{AsyncSmtpProvider, SmtpProvider};
