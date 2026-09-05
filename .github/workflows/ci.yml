@@ -1,3 +1,9 @@
+# NOTE: intentionally NOT calling the shared engineering-standards workflow
+# (tier b): its unconditional `cargo check --no-default-features` step fails
+# here — src/queue.rs and src/provider.rs reference tokio/reqwest without
+# feature gates, so a bare --no-default-features build does not compile.
+# Fix the feature-gating before adopting the shared workflow.
+
 name: CI
 
 on:
