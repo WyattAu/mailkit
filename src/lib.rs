@@ -53,6 +53,7 @@ impl<P: EmailProvider> EmailClient<P> {
 
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::unwrap_used)]
     use super::*;
     use crate::audit::{AuditLogger, EmailLogEntry, InMemoryAuditLog, LogStatus};
     use crate::message::Attachment;

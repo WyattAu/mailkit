@@ -1,3 +1,6 @@
+// Integration tests: unwrap is acceptable for test assertions.
+#![allow(clippy::unwrap_used)]
+
 //! Integration tests for the mailkit crate.
 //!
 //! Tests EmailMessage builder, EmailLogEntry creation, InMemoryAuditLog

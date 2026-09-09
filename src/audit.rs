@@ -54,7 +54,11 @@ impl InMemoryAuditLog {
 
     /// Get all logged entries.
     pub fn entries(&self) -> Vec<EmailLogEntry> {
-        self.entries.lock().unwrap().clone()
+        // Poison-tolerant: the guarded Vec is always in a valid state.
+        self.entries
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .clone()
     }
 }
 
@@ -66,7 +70,11 @@ impl Default for InMemoryAuditLog {
 
 impl AuditLogger for InMemoryAuditLog {
     fn log(&self, entry: &EmailLogEntry) -> Result<(), crate::error::EmailError> {
-        self.entries.lock().unwrap().push(entry.clone());
+        // Poison-tolerant: the guarded Vec is always in a valid state.
+        self.entries
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .push(entry.clone());
         Ok(())
     }
 }

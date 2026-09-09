@@ -1,3 +1,6 @@
+// Benchmarks: unwrap is acceptable for setup assertions.
+#![allow(clippy::unwrap_used)]
+
 use chrono::Utc;
 use criterion::{Criterion, criterion_group, criterion_main};
 use mailkit::EmailMessage;

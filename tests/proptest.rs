@@ -1,3 +1,6 @@
+// Integration tests: unwrap is acceptable for test assertions.
+#![allow(clippy::unwrap_used)]
+
 use mailkit::message::EmailMessage;
 use proptest::prelude::*;
 
