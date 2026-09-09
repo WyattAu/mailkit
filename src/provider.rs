@@ -11,11 +11,13 @@ pub trait EmailProvider: Send + Sync {
 }
 
 /// Resend HTTP API provider.
+#[cfg(feature = "resend")]
 pub struct ResendProvider {
     api_key: String,
     client: reqwest::Client,
 }
 
+#[cfg(feature = "resend")]
 impl ResendProvider {
     /// Create a new Resend provider with the given API key.
     pub fn new(api_key: impl Into<String>) -> Self {
@@ -26,6 +28,7 @@ impl ResendProvider {
     }
 }
 
+#[cfg(feature = "resend")]
 impl EmailProvider for ResendProvider {
     fn send(
         &self,

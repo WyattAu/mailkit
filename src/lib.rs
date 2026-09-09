@@ -18,7 +18,9 @@ pub mod threading;
 
 pub use error::EmailError;
 pub use message::EmailMessage;
-pub use provider::{EmailProvider, ResendProvider};
+pub use provider::EmailProvider;
+#[cfg(feature = "resend")]
+pub use provider::ResendProvider;
 pub use queue::EmailQueue;
 pub use threading::{ThreadAssignment, ThreadInput, thread_messages};
 

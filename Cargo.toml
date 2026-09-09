@@ -13,7 +13,7 @@ exclude = ["/target"]
 [dependencies]
 serde = { version = "1", features = ["derive"] }
 thiserror = "2"
-tokio = "1"
+tokio = { version = "1", features = ["sync"] }
 reqwest = { version = "0.12", features = ["json"], optional = true }
 lettre = { version = "0.11", features = ["tokio1", "tokio1-native-tls"], optional = true }
 tera = { version = "1", optional = true }
