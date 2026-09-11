@@ -1,5 +1,9 @@
 # mailkit
 
+[![docs.rs](https://docs.rs/mailkit/badge.svg)](https://docs.rs/mailkit)
+[![crates.io](https://img.shields.io/crates/v/mailkit.svg)](https://crates.io/crates/mailkit)
+[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
+
 Email delivery for Rust — SMTP (lettre) and Resend providers with template rendering, queue, and audit logging.
 
 ## Features

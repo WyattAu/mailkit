@@ -9,7 +9,7 @@
 //! 2. **Subject fallback** — messages with no resolvable reply chain are
 //!    grouped by normalized subject (`re:`/`fw:`/`fwd:` prefixes stripped,
 //!    whitespace/case normalized) within a ±7-day window
-//!    ([`SUBJECT_WINDOW_MS`]) of the group's earliest message.
+//!    ([`crate::threading::SUBJECT_WINDOW_MS`]) of the group's earliest message.
 //!
 //! Unlike full JWZ, this is a flat grouping (no container tree, no
 //! sibling/duplicate promotion): each input message gets exactly one

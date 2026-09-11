@@ -16,7 +16,6 @@ thiserror = "2"
 tokio = { version = "1", features = ["sync"] }
 reqwest = { version = "0.12", features = ["json"], optional = true }
 lettre = { version = "0.11", features = ["tokio1", "tokio1-native-tls"], optional = true }
-tera = { version = "1", optional = true }
 chrono = { version = "0.4", features = ["serde"] }
 serde_json = "1"
 
@@ -24,7 +23,6 @@ serde_json = "1"
 default = ["resend"]
 resend = ["dep:reqwest"]
 smtp = ["dep:lettre"]
-templates = ["dep:tera"]
 
 [dev-dependencies]
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
