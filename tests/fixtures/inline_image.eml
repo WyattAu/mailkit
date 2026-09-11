@@ -1,0 +1,31 @@
+From: alice@example.com
+To: bob@example.com
+Subject: Chart inside
+Date: Fri, 11 Sep 2026 12:00:00 +0000
+Message-ID: <golden@mailkit.local>
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="=_mailkit_root"
+
+--=_mailkit_root
+Content-Type: multipart/alternative; boundary="=_mailkit_fixed_alternative"
+
+--=_mailkit_fixed_alternative
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Inline chart attached.
+--=_mailkit_fixed_alternative
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<p>Inline: <img src="cid:chart"></p>
+--=_mailkit_fixed_alternative--
+
+--=_mailkit_root
+Content-Type: image/png; name="chart.png"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="chart.png"
+Content-ID: <chart>
+
+iVBORw0KGgo=
+--=_mailkit_root--

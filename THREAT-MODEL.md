@@ -1,11 +1,14 @@
 # Threat Model — mailkit
 
 Reference: STRIDE. Scope: the crate's public API surface (`EmailClient`,
-`EmailMessage` builder, `ResendProvider`, `SmtpProvider`/`AsyncSmtpProvider`,
+`EmailMessage` builder, `ResendProvider`, `SesProvider`, `SendGridProvider`,
+`PostmarkProvider`, `SmtpProvider`/`AsyncSmtpProvider`, `MimeBuilder`,
 `EmailQueue`, `AuditLogger`, `thread_messages`) as used by a downstream
 service. Trust boundaries: (1) strings entering the message builder
-(addresses, subject, bodies), (2) provider API credentials, (3) the audit
-log contents, (4) the dependency tree (reqwest for Resend, lettre for SMTP).
+(addresses, subject, bodies), (2) provider API credentials (API keys, AWS
+access/secret keys, SMTP passwords), (3) the audit
+log contents, (4) the dependency tree (reqwest for HTTP providers, lettre
+for SMTP, sha2/hmac for SigV4).
 
 ## Assets
 

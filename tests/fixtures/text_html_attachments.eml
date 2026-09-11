@@ -1,0 +1,36 @@
+From: Alice <alice@example.com>
+To: bob@example.com
+Subject: Quarterly report
+Date: Fri, 11 Sep 2026 12:00:00 +0000
+Message-ID: <golden@mailkit.local>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_mailkit_root"
+
+--=_mailkit_root
+Content-Type: multipart/alternative; boundary="=_mailkit_fixed_alternative"
+
+--=_mailkit_fixed_alternative
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Please see the attached report.
+--=_mailkit_fixed_alternative
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<p>Please see the <b>attached</b> report.</p>
+--=_mailkit_fixed_alternative--
+
+--=_mailkit_root
+Content-Type: text/plain; name="report.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="report.txt"
+
+cmVwb3J0IGNvbnRlbnRz
+--=_mailkit_root
+Content-Type: application/octet-stream; name="data.bin"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="data.bin"
+
+AAEC
+--=_mailkit_root--

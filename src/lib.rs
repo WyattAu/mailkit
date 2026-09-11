@@ -2,25 +2,72 @@
 #![deny(missing_docs)]
 
 //! Email client library for Rust with pluggable providers and audit logging.
+//!
+//! ## Providers
+//!
+//! | Provider | Feature | Default | Transport |
+//! |---|---|---|---|
+//! | Resend | `resend` | yes | HTTPS JSON |
+//! | SMTP (lettre) | `smtp` | no | SMTP |
+//! | AWS SES v2 | `ses` | no | HTTPS JSON + SigV4 (hand-rolled, no AWS SDK) |
+//! | SendGrid v3 | `sendgrid` | no | HTTPS JSON |
+//! | Postmark | `postmark` | no | HTTPS JSON |
+//!
+//! Every provider implements [`EmailProvider`] (fire-and-forget) and
+//! [`MailProvider`] (returns a [`provider::SendReceipt`], dyn-compatible).
+//! The MIME multipart builder ([`mime`]) is always available.
+//!
+//! ```no_run
+//! # #[cfg(feature = "resend")] mod demo {
+//! use mailkit::{EmailClient, EmailMessage, ResendProvider};
+//!
+//! # async fn demo() -> Result<(), mailkit::EmailError> {
+//! let client = EmailClient::new(ResendProvider::new("re_your_api_key"));
+//! let message = EmailMessage::builder()
+//!     .from("sender@example.com")
+//!     .to("recipient@example.com")
+//!     .subject("Hello from mailkit")
+//!     .html_body("<h1>Hello!</h1>")
+//!     .text_body("Hello!")
+//!     .build()?;
+//! client.send(message).await?;
+//! # Ok(())
+//! # }
+//! # }
+//! ```
 
 /// Audit logging for email operations.
 pub mod audit;
+/// Internal base64 encoder (standard alphabet, MIME folding).
+mod base64;
 /// Error types.
 pub mod error;
 /// Email message types.
 pub mod message;
+/// MIME multipart message builder (always available, no lettre dependency).
+pub mod mime;
 /// Email provider implementations.
 pub mod provider;
 /// Email queue for deferred sending.
 pub mod queue;
+/// AWS Signature Version 4 (feature `ses`).
+#[cfg(feature = "ses")]
+mod sigv4;
 /// JWZ-lite email threading (reply-chain + subject-window grouping).
 pub mod threading;
 
 pub use error::EmailError;
 pub use message::EmailMessage;
-pub use provider::EmailProvider;
+pub use mime::{MimeBuilder, MimeMessage};
+#[cfg(feature = "postmark")]
+pub use provider::PostmarkProvider;
 #[cfg(feature = "resend")]
 pub use provider::ResendProvider;
+#[cfg(feature = "sendgrid")]
+pub use provider::SendGridProvider;
+#[cfg(feature = "ses")]
+pub use provider::SesProvider;
+pub use provider::{EmailProvider, MailProvider, SendReceipt};
 pub use queue::EmailQueue;
 pub use threading::{ThreadAssignment, ThreadInput, thread_messages};
 
@@ -44,18 +91,35 @@ impl<P: EmailProvider> EmailClient<P> {
 
     /// Send an email message.
     pub async fn send(&self, message: EmailMessage) -> Result<(), EmailError> {
-        self.provider.send(&message).await
+        EmailProvider::send(&self.provider, &message).await
     }
 
     /// Get a reference to the email queue.
     pub fn queue(&self) -> &EmailQueue {
         &self.queue
     }
+
+    /// Get a reference to the underlying provider.
+    pub fn provider(&self) -> &P {
+        &self.provider
+    }
+}
+
+impl<P: EmailProvider + MailProvider> EmailClient<P> {
+    /// Send an email message and return the provider's receipt.
+    pub async fn send_with_receipt(
+        &self,
+        message: EmailMessage,
+    ) -> Result<SendReceipt, EmailError> {
+        MailProvider::send(&self.provider, &message).await
+    }
 }
 
 #[cfg(test)]
 mod tests {
     #![allow(clippy::unwrap_used)]
+    use std::pin::Pin;
+
     use super::*;
     use crate::audit::{AuditLogger, EmailLogEntry, InMemoryAuditLog, LogStatus};
     use crate::message::Attachment;
@@ -343,5 +407,68 @@ mod tests {
         let provider = MockProvider;
         queue.process(&provider).await.unwrap();
         assert!(queue.is_empty().await);
+    }
+
+    // ---- SendReceipt & trait layer ----
+
+    #[test]
+    fn send_receipt_creation() {
+        let receipt = SendReceipt::new("ses", Some("abc-123".into()));
+        assert_eq!(receipt.provider, "ses");
+        assert_eq!(receipt.message_id.as_deref(), Some("abc-123"));
+        let none = SendReceipt::new("smtp", None);
+        assert!(none.message_id.is_none());
+    }
+
+    #[tokio::test]
+    async fn box_dyn_mail_provider_with_client_and_queue() {
+        struct StubProvider;
+
+        impl MailProvider for StubProvider {
+            fn send<'a>(
+                &'a self,
+                message: &'a EmailMessage,
+            ) -> Pin<
+                Box<dyn std::future::Future<Output = Result<SendReceipt, EmailError>> + Send + 'a>,
+            > {
+                Box::pin(async move {
+                    Ok(SendReceipt::new(
+                        "stub",
+                        Some(format!("id-for-{}", message.to[0])),
+                    ))
+                })
+            }
+
+            fn name(&self) -> &str {
+                "stub"
+            }
+        }
+
+        let provider: Box<dyn MailProvider> = Box::new(StubProvider);
+        assert_eq!(MailProvider::name(provider.as_ref()), "stub");
+
+        let client = EmailClient::new(provider);
+        let msg = EmailMessage::builder()
+            .from("a@b.com")
+            .to("c@d.com")
+            .subject("Dyn")
+            .build()
+            .unwrap();
+
+        let receipt = client.send_with_receipt(msg).await.unwrap();
+        assert_eq!(receipt.provider, "stub");
+        assert_eq!(receipt.message_id.as_deref(), Some("id-for-c@d.com"));
+
+        let msg2 = EmailMessage::builder()
+            .from("a@b.com")
+            .to("c@d.com")
+            .subject("Queue")
+            .build()
+            .unwrap();
+        client.queue().enqueue(msg2).await;
+        // The queue drains the boxed provider through its EmailProvider
+        // impl, proving trait-object + 0.2.x trait interop.
+        client.queue().process(client.provider()).await.unwrap();
+        assert!(client.queue().is_empty().await);
     }
 }

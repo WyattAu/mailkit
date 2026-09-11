@@ -3,13 +3,16 @@
 Numbered, testable requirements. Every requirement maps to at least one named
 test or doc-comment contract; security-relevant items cite THREAT-MODEL.md rows.
 
-Scope: Email toolkit — MIME composition, SMTP/send providers, address parsing, thread detection
+Scope: Email toolkit — MIME composition, SMTP/Resend/SES/SendGrid/Postmark providers, SigV4 signing, attachment streaming, thread detection
 
 ## Functional
 
 | ID | Requirement | Priority |
 |----|-------------|----------|
 | REQ-MK-001 | Composed MIME messages parse back to the same headers/body (roundtrip) | MUST |
+| REQ-MK-004 | MIME output is byte-stable given pinned date/message-id/boundaries (golden fixtures) | MUST |
+| REQ-MK-005 | Attachment streaming never buffers raw file bytes wholly and enforces the configured size guard | MUST |
+| REQ-MK-006 | SigV4 signatures reproduce the official AWS known-answer vector | MUST |
 | REQ-MK-002 | Address parsing rejects malformed addresses with typed errors | MUST |
 | REQ-MK-003 | Thread detection groups messages by normalized subject + References/Message-ID windowing | MUST |
 
