@@ -5,6 +5,17 @@ Changelog](https://keepachangelog.com/) — versions follow [semver](https://sem
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-09-12
+
+### Added
+
+- `tests/config_matrix.rs` — per-knob behavior matrix for all 14 message /
+  MIME knobs (builder from/to/cc/bcc/subject/html/text/attachment +
+  `MimeBuilder` date/message-id/extra-header/boundary/max-size/inline).
+  Provider wire knobs were verified already covered in
+  `tests/providers.rs`; no dead knobs found (SMTP host/port/credentials
+  apply at TCP-send time; Bcc non-leak into MIME pinned).
+
 ## [0.3.0] - 2026-09-11
 
 ### Added
