@@ -12,7 +12,7 @@
 //! Correctness is pinned by a known-answer test against the canonical AWS
 //! documentation example (`GET iam ListUsers`).
 
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::{Digest, Sha256};
 
 type HmacSha256 = Hmac<Sha256>;

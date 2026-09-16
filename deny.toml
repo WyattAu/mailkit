@@ -17,6 +17,9 @@ allow = [
   "BSD-2-Clause",
   "BSD-3-Clause",
   "ISC",
+  # 0BSD (BSD Zero Clause — public-domain-equivalent, OSI-approved):
+  # `quoted_printable` via lettre (the `smtp` feature). Restriction-free.
+  "0BSD",
   "Unicode-3.0",
   "Zlib",
   "CDLA-Permissive-2.0",

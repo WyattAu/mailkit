@@ -1,9 +1,7 @@
-# NOTE: intentionally NOT calling the shared engineering-standards workflow
-# (tier b): its unconditional `cargo check --no-default-features` step fails
-# here — src/queue.rs and src/provider.rs reference tokio/reqwest without
-# feature gates, so a bare --no-default-features build does not compile.
-# Fix the feature-gating before adopting the shared workflow.
-
+# Shared gate matrix (tier B) + repo-specific jobs.
+# The previous hand-rolled `Check` job is fully covered by the shared
+# workflow, which is strictly stronger (adds --all-targets clippy,
+# --locked checks, deny, coverage, semver).
 name: CI
 
 on:
@@ -12,33 +10,23 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  CARGO_TERM_COLOR: always
-  RUST_BACKTRACE: 1
-
 jobs:
-  check:
-    name: Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2
-      - run: cargo fmt --all -- --check
-      - run: cargo clippy --all-features -- -D warnings
-      - run: cargo check --all-features
+  quality:
+    uses: WyattAu/engineering-standards/.github/workflows/rust-kit.yml@main
+    with:
+      tier: b
+      all-features: true
+      loom: false
+      wasm: false
+      miri: false
 
-  test:
-    name: Test
+  doc:
+    name: Doc
     runs-on: ubuntu-latest
-    needs: check
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - run: cargo test --all-features
       - run: cargo doc --no-deps --all-features
         env:
           RUSTDOCFLAGS: -D warnings
@@ -46,7 +34,6 @@ jobs:
   msrv:
     name: MSRV (1.85)
     runs-on: ubuntu-latest
-    needs: check
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@1.85.0
