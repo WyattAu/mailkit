@@ -1,4 +1,5 @@
 # mailkit
+[![Estate integration](https://github.com/WyattAu/estate-integration/actions/workflows/ci.yml/badge.svg)](https://github.com/WyattAu/estate-integration/actions/workflows/ci.yml)
 
 [![docs.rs](https://docs.rs/mailkit/badge.svg)](https://docs.rs/mailkit)
 [![crates.io](https://img.shields.io/crates/v/mailkit.svg)](https://crates.io/crates/mailkit)
