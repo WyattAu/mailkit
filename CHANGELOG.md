@@ -1,7 +1,24 @@
 # Changelog
 
 All notable changes to this project are documented here. Format: [Keep a
-Changelog](https://keepachangelog.com/) — versions follow [semver](https://semver.org).
+Changelog](https://keepachangelog.com/): versions follow [semver](https://semver.org).
+
+## [1.0.0] - 2026-10-25
+
+### Declared stable
+
+First 1.0. `mailkit` delivers production mail; this release commits the SMTP submission and provider-client surfaces (Resend, SES, SendGrid, Postmark) as API-stable.
+
+### Guarantees from here on
+
+- Breaking changes to public items require a minor bump plus a `#[deprecated]`
+  window of at least one minor release.
+- MSRV bumps are minor releases, not patch releases.
+- `#![deny(missing_docs)]` and `#![forbid(unsafe_code)]` are enforced.
+
+### Explicitly not guaranteed
+
+- New provider clients may arrive in minors behind features; existing provider behaviour will not change.
 
 ## [Unreleased]
 

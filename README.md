@@ -155,6 +155,13 @@ client.queue().process(client.provider()).await?; // retries up to 3 attempts
 | Audit logging | Built-in | Manual |
 | Type-safe builder | Yes | No |
 
+## Stability
+
+`mailkit` is 1.0. Breaking changes require a minor bump and a `#[deprecated]`
+window of at least one minor release; MSRV bumps are minor releases, never
+patch releases. `missing_docs` is denied and `unsafe` is forbidden. See the
+changelog for the short list of explicitly non-contractual behaviours.
+
 ## License
 
 Licensed under either of [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE) at your option.
