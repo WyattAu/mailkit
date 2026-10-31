@@ -26,7 +26,7 @@ First 1.0. `mailkit` delivers production mail; this release commits the SMTP sub
 
 ### Added
 
-- `tests/config_matrix.rs` — per-knob behavior matrix for all 14 message /
+- `tests/config_matrix.rs`; per-knob behavior matrix for all 14 message /
   MIME knobs (builder from/to/cc/bcc/subject/html/text/attachment +
   `MimeBuilder` date/message-id/extra-header/boundary/max-size/inline).
   Provider wire knobs were verified already covered in
@@ -37,21 +37,21 @@ First 1.0. `mailkit` delivers production mail; this release commits the SMTP sub
 
 ### Added
 
-- **Provider abstraction v2**: `MailProvider` trait — dyn-compatible,
-  returns a `SendReceipt` (`provider` + `message_id`) — implemented by every
+- **Provider abstraction v2**: `MailProvider` trait; dyn-compatible,
+  returns a `SendReceipt` (`provider` + `message_id`); implemented by every
   built-in provider. `Box<dyn MailProvider>` implements `EmailProvider`, so
   trait objects drive `EmailClient` and the retry queue unchanged.
   `EmailClient::send_with_receipt` and `EmailClient::provider` added.
 - **AWS SES provider** (`ses` feature): SES v2 `SendEmail` REST-JSON API
   with hand-rolled AWS Signature Version 4 (~150 lines, no
-  `aws-sdk-sesv2`/100+ dep chain) — verified against the official AWS
+  `aws-sdk-sesv2`/100+ dep chain); verified against the official AWS
   known-answer test vector. Config: region, access/secret key, optional
   session token, configuration set. Attachment messages are sent as SES
   `Raw` MIME via the built-in builder.
-- **SendGrid provider** (`sendgrid` feature): v3 `mail/send` —
+- **SendGrid provider** (`sendgrid` feature): v3 `mail/send` -
   personalizations, custom args, categories, sandbox mode, open/click
   tracking toggles, receipt from `X-Message-Id`.
-- **Postmark provider** (`postmark` feature): `/email` — message stream,
+- **Postmark provider** (`postmark` feature): `/email`; message stream,
   tag, metadata, Postmark `ErrorCode` surfacing, receipt from `MessageID`.
 - **MIME multipart builder** (`mime` module, always available,
   lettre-free): `multipart/mixed` + `multipart/alternative` + `related`

@@ -1,9 +1,9 @@
-# Requirements — mailkit
+# Requirements: mailkit
 
 Numbered, testable requirements. Every requirement maps to at least one named
 test or doc-comment contract; security-relevant items cite THREAT-MODEL.md rows.
 
-Scope: Email toolkit — MIME composition, SMTP/Resend/SES/SendGrid/Postmark providers, SigV4 signing, attachment streaming, thread detection
+Scope: Email toolkit; MIME composition, SMTP/Resend/SES/SendGrid/Postmark providers, SigV4 signing, attachment streaming, thread detection
 
 ## Functional
 

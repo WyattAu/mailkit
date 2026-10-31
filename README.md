@@ -5,7 +5,7 @@
 [![crates.io](https://img.shields.io/crates/v/mailkit.svg)](https://crates.io/crates/mailkit)
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
 
-Email delivery for Rust — SMTP, Resend, AWS SES, SendGrid, and Postmark
+Email delivery for Rust; SMTP, Resend, AWS SES, SendGrid, and Postmark
 providers with MIME multipart building, queue, and audit logging.
 
 ## Provider matrix
@@ -13,11 +13,11 @@ providers with MIME multipart building, queue, and audit logging.
 | Provider | Feature | Default | Transport | Attachments | Receipts |
 |---|---|---|---|---|---|
 | Resend | `resend` | ✅ | HTTPS JSON (`POST /emails`) | base64 (paths streamed) | `id` |
-| SMTP (lettre) | `smtp` | — | SMTP (sync + async) | via lettre | — |
-| AWS SES v2 | `ses` | — | HTTPS JSON + hand-rolled SigV4 (no AWS SDK) | Raw MIME via built-in builder | `MessageId` |
-| SendGrid v3 | `sendgrid` | — | HTTPS JSON (`POST /v3/mail/send`) | base64 (paths streamed) | `X-Message-Id` |
-| Postmark | `postmark` | — | HTTPS JSON (`POST /email`) | base64 (paths streamed) | `MessageID` |
-| MIME builder | — (always available) | ✅ | in-process | streaming + size guard | — |
+| SMTP (lettre) | `smtp` |; | SMTP (sync + async) | via lettre |; |
+| AWS SES v2 | `ses` |; | HTTPS JSON + hand-rolled SigV4 (no AWS SDK) | Raw MIME via built-in builder | `MessageId` |
+| SendGrid v3 | `sendgrid` |; | HTTPS JSON (`POST /v3/mail/send`) | base64 (paths streamed) | `X-Message-Id` |
+| Postmark | `postmark` |; | HTTPS JSON (`POST /email`) | base64 (paths streamed) | `MessageID` |
+| MIME builder |; (always available) | ✅ | in-process | streaming + size guard |; |
 
 All providers implement `EmailProvider` (0.2.x fire-and-forget) **and**
 `MailProvider` (0.3.0: returns a `SendReceipt`, dyn-compatible, so providers
@@ -46,7 +46,7 @@ async fn main() -> Result<(), mailkit::EmailError> {
 }
 ```
 
-### AWS SES (SigV4 by hand — no AWS SDK dependency)
+### AWS SES (SigV4 by hand: no AWS SDK dependency)
 
 The `ses` feature signs SES v2 `SendEmail` requests with a hand-rolled
 AWS Signature Version 4 implementation (~150 lines, verified against the
