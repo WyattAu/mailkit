@@ -1,0 +1,12 @@
+# mailkit
+
+> Email delivery for Rust: SMTP, Resend, AWS SES, SendGrid, and Postmark
+> providers with MIME multipart building, queueing, and audit logging.
+
+## Docs
+
+- [README.md](README.md): provider matrix, MIME semantics, usage.
+- [REQUIREMENTS.md](REQUIREMENTS.md): numbered requirements REQ-MK-001..901 with test traceability.
+- [THREAT-MODEL.md](THREAT-MODEL.md): threat model and security mitigations.
+- [SECURITY.md](SECURITY.md): security policy.
+- [CHANGELOG.md](CHANGELOG.md): release history.

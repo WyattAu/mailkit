@@ -165,3 +165,13 @@ changelog for the short list of explicitly non-contractual behaviours.
 ## License
 
 Licensed under either of [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE) at your option.
+
+## Where the truth lives
+
+| Concern | File |
+|---|---|
+| Provider matrix, MIME semantics, usage (normative) | `README.md` |
+| Requirements REQ-MK-001..901 + traceability | `REQUIREMENTS.md` |
+| Threat model | `THREAT-MODEL.md` |
+| Security policy | `SECURITY.md` |
+| Release history | `CHANGELOG.md` |
